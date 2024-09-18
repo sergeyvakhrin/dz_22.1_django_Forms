@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from catalog.models import Product, Category, Contact
+from catalog.models import Product, Category, Contact, Version
 from blog.models import Blog
 
 
@@ -30,3 +30,11 @@ class BlogAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'post', 'slug', 'created_at', 'is_published', 'views_count')
     list_filter = ('is_published',)
     search_fields = ('title', 'post',)
+
+
+@admin.register(Version)
+class VersionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'product','number_version', 'name', 'is_version',)
+    list_filter = ('is_version',)
+    search_fields = ('name', 'product', 'number_version')
+

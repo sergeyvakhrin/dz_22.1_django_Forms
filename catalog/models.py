@@ -92,3 +92,20 @@ class Contact(models.Model):
         verbose_name_plural = "Контакты"
         ordering = ("name",)
 
+
+class Version(models.Model):
+    product = models.ForeignKey(Product, related_name="versions", on_delete=models.SET_NULL, **NULLABLE, verbose_name="Продукт", help_text="Введите продукт")
+    number_version = models.CharField(max_length=10, verbose_name="Номер версии", help_text="Введите номер версии")
+    name = models.CharField(max_length=100, verbose_name="Наименование версии", help_text="Введите наименование версии", **NULLABLE)
+    is_version = models.BooleanField(verbose_name="Признак текущей версии", default=True)
+
+    def __str__(self):
+        """ Строковое представление данных """
+        return f'{self.name}'
+
+    class Meta:
+        verbose_name = "Версия"
+        verbose_name_plural = "Версии"
+        ordering = ("number_version",)
+
+
