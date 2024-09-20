@@ -1,10 +1,22 @@
-from django.forms import ModelForm, forms
+from django.forms import ModelForm, forms, BooleanField
 
 from catalog.models import Product, Version
 
 words = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
 
-class ProductForm(ModelForm):
+
+class StyleMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for fild_name, fild in self.fields.items():
+            if isinstance(fild, BooleanField):
+                fild.widget.attrs['class'] = 'form-check-input'
+            else:
+                fild.widget.attrs['class'] = 'form-control'
+
+
+
+class ProductForm(StyleMixin, ModelForm):
 
     class Meta:
         model = Product
@@ -25,7 +37,7 @@ class ProductForm(ModelForm):
         return cleaned_data
 
 
-class VersionForm(ModelForm):
+class VersionForm(StyleMixin, ModelForm):
 
     class Meta:
         model = Version

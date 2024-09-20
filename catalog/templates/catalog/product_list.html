@@ -6,6 +6,7 @@
 
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
             {% for product in object_list %}
+
             <div class="col">
                 <div class="card shadow-sm">
                     <img src="{{ product.product_image | media_filter }}">
@@ -17,12 +18,21 @@
                                 <a class="btn btn-primary" href="{% url 'catalog:product_detail' product.pk %}" role="button">Посмотреть</a>
                                 <a class="btn btn-primary" href="{% url 'catalog:product_update' product.pk %}" role="button">Изменить</a>
                                 <a class="btn btn-primary" href="{% url 'catalog:product_delete' product.pk %}" role="button">Удалить</a>
+                                <div class="card-footer">
+                                     {% for version in product.versions.all %}
+                                   {% if version.is_version %}
+                                 <p>Версия: {{ version.number_version }} Название: {{ version.name }}</p>
+                                    {% endif %}
+                                     {% endfor %}
+                                 </div>
+
                             </div>
 
                         </div>
                     </div>
                 </div>
             </div>
+
             {% endfor %}
         </div>
     </div>
