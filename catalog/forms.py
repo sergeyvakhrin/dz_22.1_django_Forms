@@ -1,8 +1,7 @@
 from django.forms import ModelForm, forms, BooleanField
 
 from catalog.models import Product, Version
-
-words = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
+from config.settings import forbidden_words
 
 
 class StyleMixin:
@@ -23,17 +22,13 @@ class ProductForm(StyleMixin, ModelForm):
         fields = "__all__"
 
     def clean_product_name(self):
-        cleaned_data = self.cleaned_data['product_name'] #TODO: реализовать метод, что бы избежать дублирования кода
-        for word in words:
-            if word in cleaned_data:
-                raise forms.ValidationError('Такое название использовать нельзя')
+        cleaned_data = self.cleaned_data['product_name']
+        validate_clean(cleaned_data, 'Такое название использовать нельзя')
         return cleaned_data
 
     def clean_product_description(self):
-        cleaned_data = self.cleaned_data['product_description'] #TODO: реализовать метод, что бы избежать дублирования кода
-        for word in words:
-            if word in cleaned_data:
-                raise forms.ValidationError('Такое описание использовать нельзя')
+        cleaned_data = self.cleaned_data['product_description']
+        validate_clean(cleaned_data,'Такое описание использовать нельзя')
         return cleaned_data
 
 
@@ -44,17 +39,21 @@ class VersionForm(StyleMixin, ModelForm):
         fields = "__all__"
 
     def clean_name(self):
-        cleaned_data = self.cleaned_data['name'] #TODO: реализовать метод, что бы избежать дублирования кода
-        for word in words:
-            if word in cleaned_data:
-                raise forms.ValidationError('Такое наименование использовать нельзя')
+        cleaned_data = self.cleaned_data['name']
+        validate_clean(cleaned_data,'Такое наименование использовать нельзя')
         return cleaned_data
 
 
     def clean_number_version(self):
-        cleaned_data = self.cleaned_data['number_version'] #TODO: реализовать метод, что бы избежать дублирования кода
-        for word in words:
-            if word in cleaned_data:
-                raise forms.ValidationError('Такое наименование использовать нельзя')
+        cleaned_data = self.cleaned_data['number_version']
+        validate_clean(cleaned_data, 'Такой номер использовать нельзя')
         return cleaned_data
 
+
+def validate_clean(cleaned_data, validation_error: str) -> None:
+    """
+    Функция для проверки и генерации ошибки
+    """
+    for word in forbidden_words:
+        if word in cleaned_data:
+            raise forms.ValidationError(validation_error)
