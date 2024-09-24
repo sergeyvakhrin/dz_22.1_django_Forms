@@ -9,3 +9,4 @@ def media_filter(path):
         return f'/media/{path}'
     return '/media/3.jpg' # необходимо указать путь к картинке вместо '#' иначе будут двойные get запросы
 
+

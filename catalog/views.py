@@ -10,6 +10,14 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 class ProductListView(ListView):
     model = Product
 
+    # def get_queryset(self):
+    #     """ Фильтрация продуктов по наличию активной версии """
+    #
+    #     data = super().get_queryset().filter(versions=True)
+    #
+    #     return data
+
+
 class ProductCreateView(CreateView):
     model = Product
     form_class = ProductForm
