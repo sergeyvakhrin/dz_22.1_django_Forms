@@ -4,7 +4,7 @@ from pathlib import Path
 
 from django.core.management import BaseCommand
 
-from catalog.models import Product, Category, Contact
+from catalog.models import Product, Category, Contact, Version
 
 
 class Command(BaseCommand):
@@ -63,6 +63,22 @@ class Command(BaseCommand):
                 ))
         return catalog_for_create
 
+    def get_version(self, catalog):
+        """ Метод для получения списка экземпляров Класса Version для заполнения базы данных """
+        version_for_create = []
+        for version in catalog:
+            data = version['fields']
+            if version['model'] == 'catalog.version':
+                valid_ver = Product.objects.get(pk=data.get('product')) if data['product'] else None
+                version_for_create.append(Version(
+                    number_version=data['number_version'],
+                    name=data.get('name', None),
+                    is_version=data['is_version'],
+                    pk=version['pk'],
+                    product=valid_ver
+                ))
+        return version_for_create
+
     def handle(self, *args, **options) -> None:
         """ Метод автоматически срабатывает при обращении к коменде fill """
 
@@ -73,6 +89,7 @@ class Command(BaseCommand):
         Product.objects.all().delete()
         Category.objects.all().delete()
         Contact.objects.all().delete()
+        Version.objects.all().delete()
 
         print("Создание Категорий")
         category_for_create = self.get_category(catalog)
@@ -86,4 +103,6 @@ class Command(BaseCommand):
         catalog_for_create = self.get_contact(catalog)
         Contact.objects.bulk_create(catalog_for_create)
 
-
+        print("Создание Версий")
+        version_for_create = self.get_version(catalog)
+        Version.objects.bulk_create(version_for_create)
