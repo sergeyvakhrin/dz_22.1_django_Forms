@@ -9,8 +9,10 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
 from pathlib import Path
+
+from var import var_value, var_key, var_key_ya, var_value_ya
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -135,11 +137,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-EMAIL_HOST = ''
+EMAIL_HOST = 'smtp.mail.ru'
 EMAIL_PORT = 465
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER = var_key
+EMAIL_HOST_PASSWORD = var_value
 EMAIL_USE_SSL = True
+
+# EMAIL_HOST = 'smtp.yandex.ru'
+# EMAIL_PORT = 465
+# EMAIL_HOST_USER = var_key_ya
+# EMAIL_HOST_PASSWORD = var_value_ya
+# EMAIL_USE_SSL = True
+# EMAIL_USE_TSL = False
+
+SERVER_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 forbidden_words = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
 
