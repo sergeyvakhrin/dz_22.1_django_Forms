@@ -16,9 +16,12 @@
                         <p class="card-text">{{ version.is_version }}</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
-                                <a class="btn btn-primary" href="{% url 'catalog:version_detail' version.pk %}" role="button">Посмотреть</a>
-                                <a class="btn btn-primary" href="{% url 'catalog:version_update' version.pk %}" role="button">Изменить</a>
-                                <a class="btn btn-primary" href="{% url 'catalog:version_delete' version.pk %}" role="button">Удалить</a>
+                                <a class="btn btn-primary" href="{% url 'catalog:version_detail' version.pk %}"
+                                   role="button">Посмотреть</a>
+                                <a class="btn btn-primary" href="{% url 'catalog:version_update' version.pk %}"
+                                   role="button">Изменить</a>
+                                <a class="btn btn-primary" href="{% url 'catalog:version_delete' version.pk %}"
+                                   role="button">Удалить</a>
                             </div>
 
                         </div>

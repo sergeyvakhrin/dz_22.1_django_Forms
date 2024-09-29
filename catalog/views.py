@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -6,8 +7,10 @@ from catalog.forms import ProductForm, VersionForm
 from catalog.models import Contact, Product, Version
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
+from users.models import User
 
-class ProductListView(ListView):
+
+class ProductListView(ListView, LoginRequiredMixin):
     model = Product
 
     # def get_queryset(self):
@@ -18,12 +21,20 @@ class ProductListView(ListView):
     #     return data
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(CreateView, LoginRequiredMixin):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:product_list',)
 
-class ProductUpdateView(UpdateView):
+    def form_valid(self, form):
+        product = form.save()
+        product.owner = self.request.user
+        product.save()
+
+        return super().form_valid(form)
+
+
+class ProductUpdateView(UpdateView, LoginRequiredMixin):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:product_list')
@@ -49,7 +60,7 @@ class ProductUpdateView(UpdateView):
             return self.render_to_response(self.get_context_data(form=form, formset=formset))
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(DeleteView, LoginRequiredMixin):
     model = Product
     success_url = reverse_lazy('catalog:product_list')
 
@@ -78,7 +89,7 @@ class ContactDetailView(ListView):
 
 ######################## Version #################
 
-class VersionListView(ListView):
+class VersionListView(ListView, LoginRequiredMixin):
     model = Version
 
     def get_context_data(self, *args, **kwargs):
@@ -87,19 +98,19 @@ class VersionListView(ListView):
         return context_data
 
 
-class VersionCreateView(CreateView):
+class VersionCreateView(CreateView, LoginRequiredMixin):
     model = Version
     form_class = VersionForm
     success_url = reverse_lazy('catalog:version_list',)
 
-class VersionUpdateView(UpdateView):
+class VersionUpdateView(UpdateView, LoginRequiredMixin):
     model = Version
     form_class = VersionForm
     success_url = reverse_lazy('catalog:version_list')
 
-class VersionDeleteView(DeleteView):
+class VersionDeleteView(DeleteView, LoginRequiredMixin):
     model = Version
     success_url = reverse_lazy('catalog:version_list')
 
-class VersionDetailView(DetailView):
+class VersionDetailView(DetailView, LoginRequiredMixin):
     model = Version
