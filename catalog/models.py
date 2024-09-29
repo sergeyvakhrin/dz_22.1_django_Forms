@@ -1,5 +1,7 @@
 from django.db import models
 
+from users.models import User
+
 NULLABLE = {"null": True, "blank": True}
 
 
@@ -57,6 +59,8 @@ class Product(models.Model):
     updated_at = models.DateTimeField(
         verbose_name="Дата изменения", help_text="Введите дату изменения", auto_now=True
     )
+    owner = models.ForeignKey(User, **NULLABLE, verbose_name='Владелец', help_text='Введите владельца', on_delete=models.SET_NULL)
+
 
     def __str__(self):
         """ Строковое представление данных """

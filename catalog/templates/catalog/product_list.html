@@ -15,16 +15,19 @@
                         <p class="card-text">{{ product.product_description | slice:":100"}}</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
-                                <a class="btn btn-primary" href="{% url 'catalog:product_detail' product.pk %}" role="button">Посмотреть</a>
-                                <a class="btn btn-primary" href="{% url 'catalog:product_update' product.pk %}" role="button">Изменить</a>
-                                <a class="btn btn-primary" href="{% url 'catalog:product_delete' product.pk %}" role="button">Удалить</a>
+                                <a class="btn btn-primary" href="{% url 'catalog:product_detail' product.pk %}"
+                                   role="button">Посмотреть</a>
+                                <a class="btn btn-primary" href="{% url 'catalog:product_update' product.pk %}"
+                                   role="button">Изменить</a>
+                                <a class="btn btn-primary" href="{% url 'catalog:product_delete' product.pk %}"
+                                   role="button">Удалить</a>
                                 <div class="card-footer">
-                                     {% for version in product.versions.all %}
-                                   {% if version.is_version %}
-                                 <p>Версия: {{ version.number_version }} Название: {{ version.name }}</p>
+                                    {% for version in product.versions.all %}
+                                    {% if version.is_version %}
+                                    <p>Версия: {{ version.number_version }} Название: {{ version.name }}</p>
                                     {% endif %}
-                                     {% endfor %}
-                                 </div>
+                                    {% endfor %}
+                                </div>
 
                             </div>
 
