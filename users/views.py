@@ -60,7 +60,8 @@ def recovery_password(request):
         email = request.POST.get('email')
         token = secrets.token_hex(8)
 
-        user_recovery_password = User.objects.get(email=email)
+        # user_recovery_password = User.objects.get(email=email)
+        user_recovery_password = get_object_or_404(User, email=email) # так безопаснее на случай отсутствия пользователя
         user_recovery_password.password = make_password(token)
         user_recovery_password.save()
         send_mail(

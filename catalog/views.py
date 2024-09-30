@@ -21,20 +21,21 @@ class ProductListView(ListView, LoginRequiredMixin):
     #     return data
 
 
-class ProductCreateView(CreateView, LoginRequiredMixin):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:product_list',)
 
     def form_valid(self, form):
-        product = form.save()
-        product.owner = self.request.user
-        product.save()
+        # product = form.save()
+        # product.owner = self.request.user
+        # product.save()
+        form.instance.owner = self.request.user # так исключается одно обращение к базе
 
         return super().form_valid(form)
 
 
-class ProductUpdateView(UpdateView, LoginRequiredMixin):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:product_list')
@@ -60,7 +61,7 @@ class ProductUpdateView(UpdateView, LoginRequiredMixin):
             return self.render_to_response(self.get_context_data(form=form, formset=formset))
 
 
-class ProductDeleteView(DeleteView, LoginRequiredMixin):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:product_list')
 
@@ -89,7 +90,7 @@ class ContactDetailView(ListView):
 
 ######################## Version #################
 
-class VersionListView(ListView, LoginRequiredMixin):
+class VersionListView(LoginRequiredMixin, ListView):
     model = Version
 
     def get_context_data(self, *args, **kwargs):
@@ -98,7 +99,7 @@ class VersionListView(ListView, LoginRequiredMixin):
         return context_data
 
 
-class VersionCreateView(CreateView, LoginRequiredMixin):
+class VersionCreateView(LoginRequiredMixin, CreateView):
     model = Version
     form_class = VersionForm
     success_url = reverse_lazy('catalog:version_list',)
@@ -108,7 +109,7 @@ class VersionUpdateView(UpdateView, LoginRequiredMixin):
     form_class = VersionForm
     success_url = reverse_lazy('catalog:version_list')
 
-class VersionDeleteView(DeleteView, LoginRequiredMixin):
+class VersionDeleteView(LoginRequiredMixin, DeleteView):
     model = Version
     success_url = reverse_lazy('catalog:version_list')
 
