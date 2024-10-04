@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -10,20 +10,14 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from users.models import User
 
 
-class ProductListView(ListView, LoginRequiredMixin):
+class ProductListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Product
+    permission_required = 'catalog.view_product'
 
-    # def get_queryset(self):
-    #     """ Фильтрация продуктов по наличию активной версии """
-    #
-    #     data = super().get_queryset().filter(versions=True)
-    #
-    #     return data
-
-
-class ProductCreateView(LoginRequiredMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
+    permission_required = 'catalog.add_product'
     success_url = reverse_lazy('catalog:product_list',)
 
     def form_valid(self, form):
@@ -35,9 +29,10 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
+    permission_required = 'catalog.change_product'
     success_url = reverse_lazy('catalog:product_list')
 
     def get_context_data(self, **kwargs):
@@ -61,16 +56,21 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
             return self.render_to_response(self.get_context_data(form=form, formset=formset))
 
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:product_list')
 
-class ProductDetailView(DetailView):
+    def test_func(self):
+        return self.request.is_superuser
+
+
+class ProductDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Product
+    permission_required = 'catalog.view_product'
 
 ################# Contact ##################
 
-class ContactListView(ListView):
+class ContactListView(LoginRequiredMixin, ListView):
     model = Contact
 
 # def contact_list(request):
@@ -85,7 +85,7 @@ class ContactListView(ListView):
 #     return render(request, 'contact_list.html', context)
 
 
-class ContactDetailView(ListView):
+class ContactDetailView(LoginRequiredMixin, ListView):
     model = Contact
 
 ######################## Version #################
@@ -104,7 +104,7 @@ class VersionCreateView(LoginRequiredMixin, CreateView):
     form_class = VersionForm
     success_url = reverse_lazy('catalog:version_list',)
 
-class VersionUpdateView(UpdateView, LoginRequiredMixin):
+class VersionUpdateView(LoginRequiredMixin, UpdateView,):
     model = Version
     form_class = VersionForm
     success_url = reverse_lazy('catalog:version_list')
@@ -113,5 +113,5 @@ class VersionDeleteView(LoginRequiredMixin, DeleteView):
     model = Version
     success_url = reverse_lazy('catalog:version_list')
 
-class VersionDetailView(DetailView, LoginRequiredMixin):
+class VersionDetailView(LoginRequiredMixin, DetailView):
     model = Version
