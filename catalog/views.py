@@ -66,12 +66,12 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
         raise PermissionDenied
 
 
-class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:product_list')
 
     def test_func(self):
-        return self.request.is_superuser
+        return self.request.user.is_superuser
 
 
 class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
@@ -80,7 +80,7 @@ class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView)
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
-        if self.request.user == self.object.owner:
+        if self.request.user == self.object.owner or self.request.user.is_superuser:
             return self.object
         raise PermissionDenied
 
