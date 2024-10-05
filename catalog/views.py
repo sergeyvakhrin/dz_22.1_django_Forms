@@ -14,12 +14,12 @@ from users.models import User
 
 class ProductListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Product
-    permission_required = 'catalog.view_product'
+    permission_required = ['catalog.view_product']
 
 class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
-    permission_required = 'catalog.add_product'
+    permission_required = ['catalog.add_product']
     success_url = reverse_lazy('catalog:product_list',)
 
     def form_valid(self, form):
@@ -34,7 +34,7 @@ class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView)
 class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
-    permission_required = 'catalog.change_product'
+    permission_required = ['catalog.change_product']
     success_url = reverse_lazy('catalog:product_list')
 
     def get_context_data(self, **kwargs):
@@ -76,7 +76,7 @@ class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView)
 
 class ProductDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Product
-    permission_required = 'catalog.view_product'
+    permission_required = ['catalog.view_product']
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
