@@ -1,9 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
 from django.forms import inlineformset_factory
+from django.http import HttpResponseForbidden
 from django.shortcuts import render
 from django.urls import reverse_lazy
 
-from catalog.forms import ProductForm, VersionForm
+from catalog.forms import ProductForm, VersionForm, ProductModeratorsForm
 from catalog.models import Contact, Product, Version
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -55,6 +57,14 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
         else:
             return self.render_to_response(self.get_context_data(form=form, formset=formset))
 
+    def get_form_class(self):
+        user = self.request.user
+        if user == self.object.owner:
+            return ProductForm
+        if user.has_perm('catalog.can_edit_published') and user.has_perm('catalog.can_edit_product_description') and user.has_perm('catalog.can_edit_category_product'):
+            return ProductModeratorsForm
+        raise PermissionDenied
+
 
 class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Product
@@ -67,6 +77,13 @@ class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView)
 class ProductDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Product
     permission_required = 'catalog.view_product'
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.request.user == self.object.owner:
+            return self.object
+        raise PermissionDenied
+
 
 ################# Contact ##################
 
