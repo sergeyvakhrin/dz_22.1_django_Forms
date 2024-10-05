@@ -60,7 +60,7 @@ class Product(models.Model):
         verbose_name="Дата изменения", help_text="Введите дату изменения", auto_now=True
     )
     owner = models.ForeignKey(User, **NULLABLE, verbose_name='Владелец', help_text='Введите владельца', on_delete=models.SET_NULL)
-
+    is_published = models.BooleanField(default=False, verbose_name='Опубликовано', help_text='Отметить для публикации')
 
     def __str__(self):
         """ Строковое представление данных """
@@ -70,6 +70,11 @@ class Product(models.Model):
         verbose_name = "Продукт"
         verbose_name_plural = "Продукты"
         ordering = ("product_name",)
+        permissions = [
+            ('can_edit_published', 'Can edit published'),
+            ('can_edit_product_description', 'Can edit description'),
+            ('can_edit_category_product', 'Can edit category',),
+        ]
 
 
 class Contact(models.Model):

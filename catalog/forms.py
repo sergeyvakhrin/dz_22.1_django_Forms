@@ -33,6 +33,18 @@ class ProductForm(StyleMixin, ModelForm):
         return cleaned_data
 
 
+class ProductModeratorsForm(StyleMixin, ModelForm):
+
+    class Meta:
+        model = Product
+        fields = ('product_description', 'category', 'is_published',)
+
+    def clean_product_description(self):
+        cleaned_data = self.cleaned_data['product_description']
+        validate_clean(cleaned_data,'Такое описание использовать нельзя')
+        return cleaned_data
+
+
 class VersionForm(StyleMixin, ModelForm):
 
     class Meta:
