@@ -74,7 +74,7 @@ class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView)
         return self.request.is_superuser
 
 
-class ProductDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Product
     permission_required = ['catalog.view_product']
 
