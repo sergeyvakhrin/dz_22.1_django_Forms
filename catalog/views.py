@@ -9,12 +9,16 @@ from catalog.forms import ProductForm, VersionForm, ProductModeratorsForm
 from catalog.models import Contact, Product, Version
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
+from catalog.services import get_products_from_cache
 from users.models import User
 
 
 class ProductListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Product
     permission_required = ['catalog.view_product']
+
+    def get_queryset(self):
+        return get_products_from_cache()
 
 class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Product
