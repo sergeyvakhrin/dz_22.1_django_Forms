@@ -25,6 +25,7 @@ load_dotenv(BASE_DIR / '.env', override=True)
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
 
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', False) == "True"
 
@@ -166,7 +167,7 @@ CACHE_ENABLED = os.getenv('CACHE_ENABLED', False) == "True"
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": os.getenv('LOCATION'),                       # redis://username:password@127.0.0.1:6379
+        "LOCATION": os.getenv('CACHE_LOCATION'),                       # redis://username:password@127.0.0.1:6379
         "TIMEOUT": 300,
     }
 }
